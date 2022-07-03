@@ -422,21 +422,20 @@ QUAST is a genome assembly assessment tool to look at the contiguity of a genome
 
 QUAST has many functionalities which we will explore later on in the tutorial, for now we are going to use it in its simplest form. It essentially just keeps track of the length of each contig and provides basic statistics. This type of information is something you would typically provide in a publication or to assess different assemblers/options you may use. **The input to the program is the genome assembly FASTA and the output are various tables and a html/pdf you can export and view.**
 
-* Start up an interactive session on WildIris:
+* Start up an interactive session, load up the Quast module, and get back into our Spades output directory:
 
 ```
 salloc -A wy_t3_2022 -t 0-05:00 --mem=10G --cpus-per-task=2
+module load quast/5.0.2
+cd spades_assembly_default
 ```
-
-
-
 
 * Run Quast
 ```bash
 # look at the usage
-quast.py --help
+quast --help
 # run the command
-quast.py contigs.fasta -o quast_results
+quast contigs.fasta --threads 2 -o quast_results
 ```
 * View output files
 
@@ -452,7 +451,12 @@ manual: https://busco.ezlab.org/
 
 BUSCO is a program utilized to assess the completeness of a genome assembly. This program makes use of the OrthoDB set of single-copy orthologous that are found in at least 90% of all the organisms in question. There are different data sets for various taxonomic groups (Eukaryotes, Metazoa, Bacteria, Gammaproteobacteria, etc. etc.). The idea is that a newly sequenced genome should contain most of these highly conserved genes. If your genome doesn't contain a large portion of these single-copy orthologs it may indicate that your genome is not complete.
 
-* Path to lineage data on RON:
+* Purge other modules and load Busco:
+
+```
+module purge
+module load busco/5.3.2
+```
 
 We will be using the Bacterial data set for our BUSCO analyis. However, there are many data sets available on our server. Listing the path below will show you all the available data sets. These can also be seen in the BUSCO manual linked above. 
 
@@ -468,24 +472,24 @@ busco --list-datasets
 #look at the help menu
 busco --help
 # run busco
-busco -i contigs.fasta -m genome -o busco-results -l bacteria
-# note: add the -c option to change the number of threads.
+busco -i contigs.fasta -m genome -c 2 -o busco-results -l bacteria
+# note: the -c option changes the number of threads
 ```
 
 * Examine the BUSCO output.
 
-The first file we will look at is the 'short_summary_busco_output.txt'. This is a file which summarizes the main findings, how many of the expected genes did we find? This summary breaks the report into four main categories: complete single-copy genes, complete duplicated genes, fragmented genes, and missing genes. We are hopeful that the majority of our genes will be found as 'complete single-copy'. Duplicated genes could indicate that that particular gene underwent a gene duplication event or that we had a miss assembly and essentially have two copies of a region of our genome. Fragmented genes are an artifact of the fact that our genome did not assemble perfectly. Some of our genome is fragmented into multiple contigs, and with that some of our genes are going to be fragmented as well. This is why it is important to inspect the N50 of the genome with QUAST. We want the majority of our contigs to be at least as big as a gene, if it's not than we will have many fragmented genes as a result.
+The first file we will look at is the 'short\_summary\_busco_output.txt'. This is a file which summarizes the main findings, how many of the expected genes did we find? This summary breaks the report into four main categories: complete single-copy genes, complete duplicated genes, fragmented genes, and missing genes. We are hopeful that the majority of our genes will be found as 'complete single-copy'. Duplicated genes could indicate that that particular gene underwent a gene duplication event or that we had a miss assembly and essentially have two copies of a region of our genome. Fragmented genes are an artifact of the fact that our genome did not assemble perfectly. Some of our genome is fragmented into multiple contigs, and with that some of our genes are going to be fragmented as well. This is why it is important to inspect the N50 of the genome with QUAST. We want the majority of our contigs to be at least as big as a gene, if it's not than we will have many fragmented genes as a result.
 
-Next we will view the 'full_table_busco_output.tsv' file. This is a file which shows the coordinates for all the associated single copy genes in our genome. It also provides information about the status of that ortholog (missing, complete, fragmented). This tsv file can be exported and viewed in excel.
+Next we will view the 'full\_table\_busco_output.tsv' file. This is a file which shows the coordinates for all the associated single copy genes in our genome. It also provides information about the status of that ortholog (missing, complete, fragmented). This tsv file can be exported and viewed in excel.
 
-The final files we will examine are in a directory called 'single_copy_busco_sequences/'. This houses all the amino acid and protein sequences. This is a rich source for comparative genomics and other sorts of analyses.
+The final files we will examine are in a directory called 'single\_copy\_busco_sequences/'. This houses all the amino acid and protein sequences. This is a rich source for comparative genomics and other sorts of analyses.
 
 ```bash
 # view the short summary
 less -S busco-results/short_summary.specific.bacteria_odb10.busco-results.txt
 # view the full table
 less -S busco-results/run_bacteria_odb10/full_table.tsv
-# list and view a amino acid of protein sequence
+# list and view amino acid of protein sequence
 ls busco-results/run_bacteria_odb10/busco_sequences/
 ```
 
@@ -501,9 +505,17 @@ alternative tools: [NCBI PGA](https://www.ncbi.nlm.nih.gov/genbank/genomesubmit_
 ![gene_annotatoion](https://user-images.githubusercontent.com/18738632/42130642-bf1fb57e-7cb8-11e8-8472-37b82dadb53e.png)
 
 
-PROKKA does a lot, and is documented very well, so i will point you towards the course website and manual for more detailed information. It is a "rapid prokaryote genome annotation pipeline". Some of the relevant options include what genetic code your organism uses (standard is default), and what types of sequences you want to annotate (tRNA, rRNA, CDS).
+PROKKA does a lot, and is documented very well, so I will point you towards the course website and manual for more detailed information. It is a "rapid prokaryote genome annotation pipeline". Some of the relevant options include what genetic code your organism uses (standard is default), and what types of sequences you want to annotate (tRNA, rRNA, CDS).
 
 * Run PROKKA
+
+
+As usual, start by purging and loading modules
+
+```
+module purge
+module load prokka
+```
 
  **The input to the program is your contig FASTA file, the output is gene annotations in GFF (and other) formats, as well as FFN (nucleotide) and FAA (amino acid) FASTA sequence files for all the annotated sequences.** We will be using several of these files to investigate the genome content of our genome. What genes does it have? What do these gene code for?
  
@@ -511,7 +523,7 @@ PROKKA does a lot, and is documented very well, so i will point you towards the 
 # look at the help menu.
 prokka --help
 # run the script, specifying an output directory
-nohup prokka contigs.fasta --outdir prokka_output --cpus 24 --mincontiglen 200 &
+prokka contigs.fasta --outdir prokka_output --cpus 2 --mincontiglen 200
 ```
 
 * PROKKA Output
@@ -530,7 +542,7 @@ The above command does a lot. It is a good idea to break it up and examine what 
 
     'grep -o' is used to pull out only CDS sequences with a product, just the definition.
     # sed 's/search_term/replace_term/g', is used to search a replace items, below we want to remove all the 'product='
-    # "sort | uniq -c " togethor combine all the duplicate lines and provide a count for each.
+    # "sort | uniq -c " combine all the duplicate lines and provide a count for each.
     # finally we save it to a file by using " > my_file"
 
 This is a good time to explore and make use of BASH. Hopefully everyone is getting used to working in BASH so they can explore as they want. Try to count the number of lines in the GFF that contain 'CDS'. How many tRNAs did we identify. etc. etc. We will be using more of these files later on in the tutorial.
@@ -539,13 +551,22 @@ This is a good time to explore and make use of BASH. Hopefully everyone is getti
 
 ### Extract the 16S sequence from the FFN file.
 
-The 16S sequence is a housekeeping gene coding for the large ribosomal subunit in Bacteria. It is highly conserved and found in every known Bacteria. This makes it a great tool to identity the bacterium (which is why it is used in metabarcoding studies). This is (hopefully) one of the genes that were identified from PROKKA. It is not a protein so it won't be found in the FAA file but it should be in the FFN file. We are going to use a simple script we wrote that is available on the server and this github page called "extract_sequence". **The program requires two inputs, 1.) a string to search in the headers (just like grep), 2.) the PROKKA ffn file. The program will output the sequence to the screen so be sure to save it with '>'. 
+The 16S sequence is a housekeeping gene coding for the large ribosomal subunit in Bacteria. It is highly conserved and found in every known Bacteria. This makes it a great tool to identity the bacterium (which is why it is used in metabarcoding studies). This is (hopefully) one of the genes that were identified from PROKKA. It is not a protein so it won't be found in the FAA file but it should be in the FFN file. We are going to use a simple script we wrote that is available on the server and this github page called "extract_sequence.py". **The program requires two inputs, 1.) a string to search in the headers (just like grep), 2.) the PROKKA ffn file. The program will output the sequence to the screen so be sure to save it with '>'.**
+
+We'll need to load up python (contained in gentools module along with a lot of other software) to run this script:
+
+```
+module purge
+module load gentools/1.0.0
+```
+
+Pull out the sequences:
 
 ```bash
 # grep for 16S in the PROKKA annotations to see if it exists
 grep 16S prokka_output/*.ffn
 # run extract with an exact header
-extract_sequences "16S ribosomal RNA" prokka_output/PROKKA_*.ffn > 16S_sequence.fasta
+/project/wy_t3_2022/extract_sequences.py "16S ribosomal RNA" prokka_output/PROKKA_*.ffn > 16S_sequence.fasta
 # check if it worked
 less -S 16S_sequence.fasta
 ```
@@ -580,10 +601,19 @@ As a quick example for how BLAST works we will use the same 16S_sequence and BLA
 
 * Make a BLAST db from your contig files
 
+Set up modules:
+
+```
+module purge
+module load gcc/11.2.0 blast-plus/2.12.0 gentools/1.0.0
+```
+
+We're loading up gentools as well because it has tabview, a useful program for viewing the output below.
+
 The only required input is a FASTA file (our contigs), the database type (nucl or prot), and an output name for the new database.
 
 ```bash
-makeblastdb -in contigs.fasta -dbtype nucl -out contigs_db 
+makeblastdb -in contigs.fasta -dbtype nucl -out contigs_db
 ```
 
 ## BLAST the 16S sequence against your contig database.
@@ -599,7 +629,6 @@ blastn -help
 blastn -query 16S_sequence.fasta -db contigs_db -out 16S_vs_contigs_6.tsv -outfmt 6
 # view the results
 tabview 16S_vs_contigs_6.tsv
-
 ```
 
 Since this 16S sequence was derived from this assembly you should see a perfect 100% identity match spanning about 1500 nucleotides. 
@@ -607,14 +636,48 @@ Since this 16S sequence was derived from this assembly you should see a perfect 
 
 ## BLAST the entire assembly against the nt database.
 
-We store a local copy of the complete nucleotide database on our server. We will be using this to provide a rough taxonomy to every sequence in our assembly and to ultimately identify non-target contaminates (like human and other bacteria) and to confirm our species identification from the 16S BLAST. Later we will be using the output file as in input to  blobtools and to visualize this information. blobtools requires a specifically formatted BLAST file, I therefore provide a script that will run the BLAST to the programs specification. We will simply provide the script with our contigs file and it will complete the task. This is a simple script that is not much different than the example we ran above. It will automatically format a meaningfull output name. 
+We store a local copy of the complete nucleotide database on our server. We will be using this to provide a rough taxonomy to every sequence in our assembly and to ultimately identify non-target contaminates (like human and other bacteria) and to confirm our species identification from the 16S BLAST. Later we will be using the output file as in input to  blobtools and to visualize this information. blobtools requires a specifically formatted BLAST file, I therefore provide a script that will run the BLAST to the programs specification. We will simply provide the script with our contigs file and it will complete the task. This is a simple script that is not much different than the example we ran above. It will automatically format a meaningfull output name.
+
+This will take a while to run, so we'll submit this as a job. Create a new file called `blobblast.slurm` with the following info:
+
 
 ```bash
-# run the scipt, note that it will automatically use nohup since it will take about 30 minutes to run
-blob_blast.sh contigs.fasta
-# view the reuslts, the last column is the species identification
+#!/bin/bash
+
+#SBATCH --job-name blobblast
+#SBATCH -A wy_t3_2022
+#SBATCH -t 0-04:00
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=10G
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=YOUR_EMAIL@EMAIL.com
+#SBATCH -e err_blobblast_%A.err
+#SBATCH -o std_blobblast_%A.out
+
+# load modules necessary
+module load gcc/11.2.0 blast-plus/2.12.0
+
+# Set working directory
+cd ~/wgs/spades_assembly_default
+
+# run blobblast
+/project/wy_t3_2022/blob_blast.sh contigs.fasta
+```
+
+Submit the job, then check that it's running:
+
+```
+sbatch blobblast.slurm
+squeue -u YOUR_USERNAME
+```
+
+When this finishes, view the results, the last column is the species identification:
+
+```
 tabview contigs.fasta.vs.nt.cul5.1e5.megablast.out
 ```
+
 
 We will leave this BLAST file for now but will come back to it when we are ready to run blobtools. blobtools requires two input files, the BLAST results and a mapping file (SAM/BAM) which we will generate next.
 
@@ -629,15 +692,22 @@ Read Mapping refers to the process of aligning short reads to a reference sequen
 
 SAM format specifications: https://samtools.github.io/hts-specs/SAMv1.pdf
 
-Many programs perform read mapping. The recommended program depends on what you are trying to do. My favorite is 'BWA mem' which balances performance and accuracy well. **The input to the program is a referece assembly and reads to map (forward and reverse). The output is a SAM file**. By default BWA writes the SAM file to standard output, I therefore save it directly to a file. There are lots of options, please see the manual to understand what I am using.
+Many programs perform read mapping. The recommended program depends on what you are trying to do. My favorite is 'BWA mem' which balances performance and accuracy well. **The input to the program is a reference assembly and reads to map (forward and reverse). The output is a SAM file**. By default BWA writes the SAM file to standard output, I therefore save it directly to a file. There are lots of options, please see the manual to understand what I am using.
+
+Set up modules
+
+```
+module purge
+module load gcc/11.2.0 bwa/0.7.17 samtools/1.15 gentools/1.0.0
+```
 
 * Map Reads to your assembly
 
 ```bash
 # Step 1: Index your reference genome. This is a requirement before read mapping.
-bwa index $fasta
+bwa index contigs.fasta
 # Step 2: Map the reads and construct a SAM file.
-bwa mem -t 24 $fasta $forward $reverse > raw_mapped.sam
+bwa mem -t 2 contigs.fasta ../raw_data/*R1* ../raw_data/*R2* > raw_mapped.sam
 # view the file with less, note that to see the data you have to scroll down past all the headers (@SQ).
 less -S raw_mapped.sam
 ```
@@ -646,17 +716,16 @@ less -S raw_mapped.sam
 
 ```bash
 # Remove sequencing reads that did not match to the assembly and convert the SAM to a BAM.
-samtools view -@ 24 -Sb  raw_mapped.sam  | samtools sort -@ 24 - sorted_mapped
+samtools view -@ 2 -Sb  raw_mapped.sam  | samtools sort -@ 2 - sorted_mapped
 # Examine how many reads mapped with samtools
 samtools flagstat sorted_mapped.bam
 # Calculate per base coverage with bedtools
 
 # index the new bam file
 samtools index sorted_mapped.bam
-
 bedtools genomecov -ibam sorted_mapped.bam > coverage.out
 # Calculate per contig coverage with gen_input_table.py
-gen_input_table.py  --isbedfiles $fasta coverage.out >  coverage_table.tsv
+gen_input_table.py --isbedfiles $fasta coverage.out >  coverage_table.tsv
 # This outputs a simple file with two columns, the contig header and the average coverage.
 ```
 
@@ -670,7 +739,7 @@ The first step (blobtools create) in this short pipeline takes all of our input 
 
 After that is complete we will use 'blobtools view' to output all the data into a human readable table. Finally we will use 'blobtools plot' to construct the blobplot visuals.
 
-* Run the blobtools pipeline.
+* Run the blobtools pipeline - blobtools is loaded up as part of the gentools module.
 
 ```bash
 # Create lookup table
@@ -680,7 +749,7 @@ blobtools create -i contigs.fasta -b sorted_mapped.bam -t contigs.fasta.vs.nt.cu
 blobtools view --help
 blobtools view -i blob_out.blobDB.json -r all -o blob_taxonomy
 # view the table, I remove headers with grep -v and view with tabview
-grep -v '##' blob_taxonomy.blob_out.blobDB.table.txt
+grep -v '##' blob_taxonomy.blob_out.blobDB.table.txt | less -S
 # Plot the data
 blobtools plot --help
 blobtools plot -i blob_out.blobDB.json -r genus
@@ -697,16 +766,16 @@ Take your time with this step. There is no exact set of commands that will work 
 
 Column headers we will use. #2 == length, #3 == GC content, #5 == Coverage, #15 == family, #18 == genus. 
 
-I am going to take this one step at a time and construct a final contig list ones we are happy with the cutoff values we choose. I will mainly be using 'awk' to do this filtering, you could also do it in excel. For awk, the '-F' options sets the field separator (\t for a tsv), next we can call individual columns using $ + column_number.
+I am going to take this one step at a time and construct a final contig list once we are happy with the cutoff values we choose. I will mainly be using 'awk' to do this filtering, you could also do it in excel. For awk, the '-F' options sets the field separator (\t for a tsv), next we can call individual columns using $ + column_number.
 
 * Filter by length
 
 ```bash
 # make a directory for filtering
-mkdir ~/mdibl-t3-2018-WGS/filtered_assembly
-cd ~/mdibl-t3-2018-WGS/filtered_assembly
+mkdir ~/wgs/filtered_assembly
 # copy the taxonomy table
-cp ~/~/mdibl-t3-2018-WGS/blob_taxonomy.blob_out.blobDB.table.txt ./
+cp blob_taxonomy.blob_out.blobDB.table.txt ~/wgs/filtered_assembly
+cd ~/wgs/filtered_assembly
 # Filter by length
 grep -v '#' blob_taxonomy.blob_out.blobDB.table.txt | awk -F'\t' '$2 > 500' | tabview -
 # You can always do the opposite to examine what you are losing, do this every time
@@ -728,7 +797,7 @@ grep -v '#' blob_taxonomy.blob_out.blobDB.table.txt | awk -F'\t' '$2 > 500' | aw
 # Check how many we lose
 grep -v '#' blob_taxonomy.blob_out.blobDB.table.txt | awk -F'\t' '$2 > 500' | awk -F'\t' '$5 < 5' | wc
 # Try a higher value
-grep -v '#' blob_taxonomy.blob_out.blobDB.table.txt | awk -F'\t' '$2 > 500' | awk -F'\t' '$5 > 15' | tabview -
+grep -v '#' blob_taxonomy.blob_out.blobDB.table.txt | awk -F'\t' '$2 > 500' | awk -F'\t' '$5 > 15' | wc
 # turns out this makes no difference.
 ```
 Hopefully at some point you will be happy with what you decide for a filtering criteria. Be sure to carefully check what you are throwing away. Do any of the contigs still have the non-target taxonomy assigned? Are you losing anything that has the right taxonomy? If you notice contigs that are obviously contamination how can the filtering options be adjusted to remove these but not out targets? Do you need to add a taxonomy or GC based filter?
@@ -740,7 +809,7 @@ Assuming we have carefully selected our criteria we are ready to construct a lis
  Our current table has many columns. We want just the first column which are contig headers. You will start with the same command you selected for filtering criteria and add an option to just print the first column. Notice the output name that I choose. It should reflect what we use as a filterig criteria.
  
  ```bash
- # use awk to constuct list, the new part is the final part of the command which will only print the first column.
+# use awk to constuct list, the new part is the final part of the command which will only print the first column.
  grep -v '##' blob_taxonomy.blob_out.blobDB.table.txt | awk -F'\t' '$2 > 500' | awk -F'\t' '$5 > 20' | tabview -
  grep -v '##' blob_taxonomy.blob_out.blobDB.table.txt | awk -F'\t' '$2 > 500' | awk -F'\t' '$5 > 20' | awk -F'\t' '{print $1}' > list_of_contigs_to_keep_len500_cov20.txt
  # view the file to make sure it is a list of contig headers
@@ -751,8 +820,18 @@ Assuming we have carefully selected our criteria we are ready to construct a lis
  
  I have created a script that takes three arguments. An original FASTA file, a list of headers we want to keep, and an output name for the new FASTA. Be sure to give your final file a meaningful name. Usually somehting like the species name followed by the sample/strain id.
  
+I was having issues with Python & Biopython, so let's install it real quick with conda:
+ 
+ ```
+module load swset/2022-02-24  gcc/11.2.0 miniconda3/4.10.3
+conda create -n biopy -c anaconda biopython
+conda activate biopy
+ ```
+ 
+ Then we can proceed:
+ 
  ```bash
- filter_contigs_by_list.py ~/mdibl-t3-WGS/spades_assembly/contigs.fasta list_of_contigs_to_keep_len500_cov20.txt Streptomyces_A1277_filtered.fasta
+python /project/wy_t3_2022/filter_contigs_by_list.py ~/wgs/spades_assembly_default/contigs.fasta list_of_contigs_to_keep_len500_cov20.txt SPECIES_STRAIN_filtered.fasta
  ```
  
  ## Average coverage from Blobtools table.
@@ -760,17 +839,17 @@ Assuming we have carefully selected our criteria we are ready to construct a lis
 ```
 # Coverage from blob table
 # remove the initial grep if you want the average coverage for all the contigs
-grep -f list_to_keep.txt blob_taxonomy.blob_out.blobDB.table.txt | awk '{w = w + $2; e = e + $5 * $2;} END {print e/w}'
+grep -f list_of_contigs_to_keep_len500_cov20.txt blob_taxonomy.blob_out.blobDB.table.txt | awk '{w = w + $2; e = e + $5 * $2;} END {print e/w}'
 ```
  
  ## BLAST the final contigs against UniVec to ensure no contamination is found.
  
  ```
- # download univec database
- wget "https://ftp.ncbi.nlm.nih.gov/pub/UniVec/UniVec"
+# download univec database
+wget "https://ftp.ncbi.nlm.nih.gov/pub/UniVec/UniVec"
 
 # BLAST the sequences
-blastn -reward 1 -penalty -5 -gapopen 3 -gapextend 3 -dust yes -soft_masking true -evalue 700 -searchsp 1750000000000 -query filtered-SKB06.fasta -subject UniVec  -outfmt 6 -out genome_vs_univec.6
+blastn -reward 1 -penalty -5 -gapopen 3 -gapextend 3 -dust yes -soft_masking true -evalue 700 -searchsp 1750000000000 -query SPECIES_STRAIN_filtered.fasta -subject UniVec  -outfmt 6 -out genome_vs_univec.6
  
  ```
  
@@ -798,4 +877,8 @@ Depending on how you answer these questions you may have to go back and adjust y
 
 
 
-- got to line 342 so far
+- check on the blob blast output when it finishes
+- may want to drop out the module purges, since it messes up loading other stuff sometimes
+- need to get gen_input_table.py off of Ron
+- have them conda install Blobtools?
+
