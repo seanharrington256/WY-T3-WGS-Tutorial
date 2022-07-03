@@ -119,6 +119,7 @@ mv *fastq.gz raw_data
 ```
 salloc -A wy_t3_2022 -t 0-05:00 --mem=10G --cpus-per-task=2
 ```
+
 Note the file extension - fastq.\*\*gz**. Since these files are usually pretty big it is standard to receive them compressed. To view these files ourselves (which you normally wouldn't do) you either have to decompress the data with gzip or by using variations of the typical commands. Instead of 'cat' we use 'zcat', instead of grep we can use 'zgrep'. Below I show both ways.
        
 ```bash
@@ -362,12 +363,12 @@ grep -c '>' spades_assembly_default/contigs.fasta
 The FASTA format is similar to the FASTQ format except it does not include quality information. Each sequence is also delineated by a '>' symbol instead of a '@'. In addition, all the sequences will be much larger (since they were assembled). Instead of all the sequencing being 250 bp they could be the size of an entire genome!  Each of the sequence entries in the FASTA file are typically refereed to as a contig, which means contiguous sequence. 
 
 
-In an ideal world the assembler would work perfectly and we would have one contig per chromosome in the genome. In the case of a typical bacterium (if there is such a thing) this would mean one circular chromosome and maybe a plasmid. So if the assembly worked perfect we would see two contigs in our FASTA file. However, this is very rarely the case (unless we add some sort of long-read technology like pacbio or nanopore sequencing). 
+In an ideal world the assembler would work perfectly and we would have one contig per chromosome in the genome. In the case of a typical bacterium (if there is such a thing) this would mean one circular chromosome and maybe a plasmid. So if the assembly worked perfectly we would see two contigs in our FASTA file. However, this is very rarely the case (unless we add some sort of long-read technology like pacbio or nanopore sequencing). 
 
 
 How fragmented your reconstructed genome is usually depends on how many reads you put into your assembler, how large the genome is, and what the architecture and complexity of the genome is like. We typically see a genome split into 10's to 100's of contigs for a typical run.
 
-In the case of SPAdes the FASTA headers are named in a common format. Something like "NODE_1_length_263127_cov_73.826513". The first field is a unique name for the contig (just a numerical value), the next field is the length of the sequence, and the last field is the kmer coverage of that contig (this is different than read coverage which NCBI submissions require). Furthermore, the contigs are organized by length where the longest contigs are first.
+In the case of SPAdes the FASTA headers are named in a common format. Something like "NODE\_1\_length\_263127\_cov_73.826513". The first field is a unique name for the contig (just a numerical value), the next field is the length of the sequence, and the last field is the kmer coverage of that contig (this is different than read coverage which NCBI submissions require). Furthermore, the contigs are organized by length where the longest contigs are first.
 
 
 * Clean up Spades directory.
@@ -380,20 +381,29 @@ We are going to proceed to remove these unwanted files. **Remember if you delete
 ```bash
 # There are many ways to do this, proceed however you are comfortable. I am going to move the files I want to keep out of the directory, delete everything else in the directory with 'rm' then move my files back in. Alternatively you could just remove unwanted files one at a time.
 # Move into the spades directory
-cd spades_spades_assembly_default/
+cd spades_assembly_default/
 # move the files we want to keep back one directory
 mv contigs.fasta spades.log ../
 # confirm that the files moved!!!!!!!
 ls ../
 # confirm you are still in the spades_directory (I'm paranoid)
 pwd
-# you should see something like /home/GROUP/UserName/mdibl-t3-2018-WGS/spades_directory_default/
+# you should see something like 
+# /home/USERNAME/wgs/spades_assembly_default
 # After you confirm the files have been moved and you are in the right directory, delete the unwanted files
 rm -r *
 # move the files back
 mv ../contigs.fasta ../spades.log ./
 # list the directory and you should see just the two files.
 ls
+```
+
+We can also delete the err & std files that we made using SLURM, the std info that's useful should all be in the Spades log file and the err file should be empty (unless you encountered an error). **Note that this is not always the case -- sometimes you will want to keep one or both of these files, as they can contain information about how you ran an analysis, like the Spades ".log" file.**
+
+```
+# Get back to your wgs directory from spades_assembly_default
+cd ..
+rm err_spades* std_spades*
 ```
 
 # Genome Assessment
@@ -411,6 +421,15 @@ manual: http://quast.bioinf.spbau.ru/manual.html
 QUAST is a genome assembly assessment tool to look at the contiguity of a genome assembly, how well the genome was reconstructed. Did you get one contig representing your entire genome? Or did you get thousands of contigs representing a highly fragmented genome? Quast also gives us some useful information like how many base pairs our genome assembly is (total genome size).
 
 QUAST has many functionalities which we will explore later on in the tutorial, for now we are going to use it in its simplest form. It essentially just keeps track of the length of each contig and provides basic statistics. This type of information is something you would typically provide in a publication or to assess different assemblers/options you may use. **The input to the program is the genome assembly FASTA and the output are various tables and a html/pdf you can export and view.**
+
+* Start up an interactive session on WildIris:
+
+```
+salloc -A wy_t3_2022 -t 0-05:00 --mem=10G --cpus-per-task=2
+```
+
+
+
 
 * Run Quast
 ```bash
