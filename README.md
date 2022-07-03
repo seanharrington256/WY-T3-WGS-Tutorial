@@ -263,7 +263,7 @@ mkdir trimmed_reads
 # move all the reads into the new directory
 mv *fastq.gz trimmed_reads/
 # confirm that the files have moved
-ls 	/
+ls trimmed_reads/
 ```
 
 When the program finishes it outputs four files. paired\_forward.fastq.gz, paired\_reverse.fastq.gz, and two unpaired reads. These output files are cleaned reads, which hopefully retained the highly confident sequences and have removed the adapters from the sequences. Some sequences will be lost entirely, some will lose a few bases off the ends, and some won't be trimmed at all. When a reverse read is lost but a forward read is maintained, the forward read will be written to the unpaired_forward.fastq.gz file (and vise-versa).
