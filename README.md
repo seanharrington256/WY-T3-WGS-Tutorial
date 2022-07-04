@@ -2,38 +2,44 @@
 Whole-Genome Assembly and Assessment Tutorial
 
 # UNDER ACTIVE DEVELOPMENT to adapt for UW's WildIris cluster
+- To still update:
+	- gen_input_table.py isn't working
+	- put in the path to the data
+
 
 ## Overview of the Workflow
 
 ![](img/diagram-WGS.png)
 
 ## Table of Contents
-# NEED TO FIX THIS TO MY LINKS, not Joe's
 
-* [Getting Started](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#general-notes)  
+* [Getting Started](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#general-notes)  
+    * [WildIris intro](https://github.com/seanharrington256/WildIris_tutorial)
     * [Joe's BASH Tutorials](https://github.com/Joseph7e/HCGS-BASH-tutorial) and [INBRE BASH Tutorials](https://geiselmed.dartmouth.edu/nhinbre/bioinformatics-modules/)
     * [Reproducibility](https://github.com/ToniWestbrook/repeatfs)
-    * [Starting Data](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#starting-data) 
-* [Assessment of Sequencing Reads](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#sequencing-read-assessment)
-    * [FASTQ file format](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#fastq-file-format)
-    * [Read Quality Check](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#examine-read-quality) - w/FASTQC
-* [Adapter and Quality Trimming](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#adapter-and-quality-trimming) - w/Trimmomatic
-* [Genome Assembly](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#genome-assembly) - w/SPAdes
-    * [FASTA file format](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#fasta-format)
-* [Genome Assessment](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#genome-assessment)
-    * [Genome Structure (Contiguity)](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#genome-structure-assessment) - w/ QUAST
-    * [Expected Gene Content](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#Run BUSCO) - w/ BUSCO
-* [Genome Annotation](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#genome-annotation) w/PROKKA
-* [Identification of the Organism](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#organism-identification)
-    * [BLAST](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#blast)
-* [Read Mapping](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#read-mapping) w/BWA and Samtools
-* [Filtering the Genome Assembly](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#non-target-contig-removal) w/Blobtools
-* [What's Next?](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#afterthoughts)
-    * [Genome Visualization](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial#genome-visualization)
+    * [Starting Data](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#starting-data) 
+* [Assessment of Sequencing Reads](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#sequencing-read-assessment)
+    * [FASTQ file format](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#fastq-file-format)
+    * [Read Quality Check](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#examine-read-quality) - w/FASTQC
+* [Adapter and Quality Trimming](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#adapter-and-quality-trimming) - w/Trimmomatic
+* [Genome Assembly](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-assembly) - w/SPAdes
+    * [FASTA file format](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#fasta-format)
+* [Genome Assessment](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-assessment)
+    * [Genome Structure (Contiguity)](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-structure-assessment) - w/ QUAST
+    * [Expected Gene Content](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#Run BUSCO) - w/ BUSCO
+* [Genome Annotation](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-annotation) w/PROKKA
+* [Identification of the Organism](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#organism-identification)
+    * [BLAST](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#blast)
+* [Read Mapping](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#read-mapping) w/BWA and Samtools
+* [Filtering the Genome Assembly](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#non-target-contig-removal) w/Blobtools
+* [What's Next?](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#afterthoughts)
+    * [Genome Visualization](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-visualization)
     * [Submission to NCBI](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial)
     * [Comparative Genomics](https://github.com/Joseph7e/HCGS-Comparative-Genomics)
  
 ## General Notes:
+This tutorial is an adaptation of Joe's tutorial from the MDIBL T3 workshop: [https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial](https://github.com/Joseph7e/MDIBL-T3-WGS-Tutorial). "I" will at various points mean Joe when he wrote it or Sean when I modified it.
+
 **For each program that we run in this tutorial I have provided a link to the manual**. These manuals provide a thorough explanation of what exactly we are doing. Before running the program it is a good idea to skim through these, examine the options, and see what it does. It is also a good idea to check out the publication associated with the program. Please note that the commands we run are general and usually executed with default settings. This works great for most genomes but the options may need to be tweaked depending on your genome. Before you run any command it is also a great idea to look at the programs help menu. This can usually be done with the name of the program followed by '-h' or '-help' or '--help'. i.e. 'spades -h'. Also ... never forget about google for quick answers to any confusion.
 
 
@@ -61,12 +67,12 @@ Prepare Library           |  Sequence DNA
 ## How NGS sequencing works
 [![sequencing by synthesis](img/youtube-video-sequencing.PNG)](https://www.youtube.com/watch?v=p4vKJJlNTKA&t=9s "Sequencing")
 
-Your starting data is found within the shared wy\_t3_2022 project directory 
+Your starting data is found within the shared wy\_t3_2022 project directory.
 
 # EDIT THIS ONCE DATA IS WHERE IT GOES
 
 
-. To start we will move a set of Sample data into your home directories. Each of these samples represent the genome of a unique and novel microbe that has not been seen before (except by me). Inside this directory are Illumina HiSeq 2500, paired-end, 250 bp sequencing reads. Looking in this directory you should see two files per sample, the forward and reverse reads. These files are in **FASTQ** format (see below).
+To start we will move a set of Sample data into your home directories. Each of these samples represent the genome of a unique and novel microbe that has not been seen before (except by me). Inside this directory are Illumina HiSeq 2500, paired-end, 250 bp sequencing reads. Looking in this directory you should see two files per sample, the forward and reverse reads. These files are in **FASTQ** format (see below).
 
 
 ## Get your bearing on the server.
@@ -229,10 +235,9 @@ alternative tools: [cutadapt](http://cutadapt.readthedocs.io/en/stable/guide.htm
 You may have noticed from the fastqc output the some of your reads have poor qualities towards the end of the sequence, this is especially true for the reverse reads and is common for Illumina data. You may also notice that the fastqc report 'failed' for adapter content. The Trimmomtic program will be used to trim these low quality bases and to remove the adapters.  We will use these trimmed reads for our genome assembly.
 
 
-Purge currently loaded modules and load up Trimmomatic
+* Load up Trimmomatic
 
 ```
-module purge
 module load trimmomatic/0.40
 ```
 
@@ -288,10 +293,9 @@ alternative tools: [ABySS](http://www.bcgsc.ca/platform/bioinfo/software/abyss),
 
 With our trimmed reads in hand are now ready to assemble our genomes (check out Kelley's PowerPount for how it works). There are many programs that are used for genome assembly and different assemblers work well with certain genomes (how large the genome is, how complex, is it a Eukaryote, etc), but SPAdes works very well for most bacteria. Either way these programs are usually run with the same sort of syntax. **The input is a set of sequencing reads in FASTQ format and the output will be a FASTA file which is the genome assembly**. I encourage you to try out a different assembler and compare the results.
 
-* Purge modules and load spades
+* Load spades
 
 ```
-module purge
 module load gcc/11.2.0 spades/3.15.3
 ```
 
@@ -451,10 +455,9 @@ manual: https://busco.ezlab.org/
 
 BUSCO is a program utilized to assess the completeness of a genome assembly. This program makes use of the OrthoDB set of single-copy orthologous that are found in at least 90% of all the organisms in question. There are different data sets for various taxonomic groups (Eukaryotes, Metazoa, Bacteria, Gammaproteobacteria, etc. etc.). The idea is that a newly sequenced genome should contain most of these highly conserved genes. If your genome doesn't contain a large portion of these single-copy orthologs it may indicate that your genome is not complete.
 
-* Purge other modules and load Busco:
+* Load Busco:
 
 ```
-module purge
 module load busco/5.3.2
 ```
 
@@ -510,10 +513,9 @@ PROKKA does a lot, and is documented very well, so I will point you towards the 
 * Run PROKKA
 
 
-As usual, start by purging and loading modules
+As usual, start by loading modules
 
 ```
-module purge
 module load prokka
 ```
 
@@ -556,7 +558,6 @@ The 16S sequence is a housekeeping gene coding for the large ribosomal subunit i
 We'll need to load up python (contained in gentools module along with a lot of other software) to run this script:
 
 ```
-module purge
 module load gentools/1.0.0
 ```
 
@@ -604,7 +605,6 @@ As a quick example for how BLAST works we will use the same 16S_sequence and BLA
 Set up modules:
 
 ```
-module purge
 module load gcc/11.2.0 blast-plus/2.12.0 gentools/1.0.0
 ```
 
@@ -697,7 +697,6 @@ Many programs perform read mapping. The recommended program depends on what you 
 Set up modules
 
 ```
-module purge
 module load gcc/11.2.0 bwa/0.7.17 samtools/1.15 gentools/1.0.0
 ```
 
@@ -725,7 +724,7 @@ samtools flagstat sorted_mapped.bam
 samtools index sorted_mapped.bam
 bedtools genomecov -ibam sorted_mapped.bam > coverage.out
 # Calculate per contig coverage with gen_input_table.py
-gen_input_table.py --isbedfiles $fasta coverage.out >  coverage_table.tsv
+/project/wy_t3_2022/gen_input_table.py --isbedfiles contigs.fasta coverage.out >  coverage_table.tsv
 # This outputs a simple file with two columns, the contig header and the average coverage.
 ```
 
@@ -739,7 +738,21 @@ The first step (blobtools create) in this short pipeline takes all of our input 
 
 After that is complete we will use 'blobtools view' to output all the data into a human readable table. Finally we will use 'blobtools plot' to construct the blobplot visuals.
 
-* Run the blobtools pipeline - blobtools is loaded up as part of the gentools module.
+
+* Conda install blobtools:
+
+I've had issues running blobtools with anything other than one specific version on WildIris, and this unfortunately does not match the version currently in the gentools module. I will have ARCC update this, but for now, we'll create our own conda environment. See [here](https://www.freecodecamp.org/news/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c/) for an overview of conda environments. For out purposes, it's enough to know that conda is a really powerful tool for installing specific versions of software with all the dependencies to run it into an environment that will not conflict with other installed software. We'll create an environment, activate it, then install blobtools into it. When you're done with an environment, you can deactivate it, then reactivate it anytime you want to use it again.
+
+```
+# load up the conda module
+
+module load swset/2022-02-24  gcc/11.2.0 miniconda3/4.10.3
+conda create -n blobtoolsv1 -y
+conda activate blobtoolsv1
+conda install -c bioconda blobtools=1.0.1=py27_3 -y
+```
+
+* Run the blobtools pipeline
 
 ```bash
 # Create lookup table
@@ -754,6 +767,11 @@ grep -v '##' blob_taxonomy.blob_out.blobDB.table.txt | less -S
 blobtools plot --help
 blobtools plot -i blob_out.blobDB.json -r genus
 ```
+Once that finishes, we can deactivate the blobtoolsv1 environment to return to our base environment.
+
+```conda deactivate```  - Reactivate anytime using ```conda activate blobtoolsv1```. When that environment is not active, you cannot use blobtools, because the computer doesn't know where to look for it.
+
+
 The final table and plots can be exported to your computer to view. We will be using the table to decide which contigs to remove.
 
 ![project_cherylandam-sample_lra1-contigs fasta blobdb json bestsum genus p7 span 100 blobplot spades](https://user-images.githubusercontent.com/18738632/42291330-0c6caf52-7f99-11e8-977d-4daf9321d2fe.png)
@@ -873,12 +891,4 @@ Depending on how you answer these questions you may have to go back and adjust y
 ![streptomyces_genome_paper](https://user-images.githubusercontent.com/18738632/42292594-9b1a437e-7fa1-11e8-8a2e-b39fc9cfdcaf.jpg)
 
 
-
-
-
-
-- check on the blob blast output when it finishes
-- may want to drop out the module purges, since it messes up loading other stuff sometimes
-- need to get gen_input_table.py off of Ron
-- have them conda install Blobtools?
 
