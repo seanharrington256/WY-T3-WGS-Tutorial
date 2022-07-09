@@ -1,10 +1,8 @@
 # MDIBL-T3-WGS-Tutorial
 Whole-Genome Assembly and Assessment Tutorial
 
-# UNDER ACTIVE DEVELOPMENT to adapt for UW's WildIris cluster
 - To still update:
 	- gen_input_table.py isn't working
-	- put in the path to the data
 
 
 ## Overview of the Workflow
@@ -48,7 +46,10 @@ Throughout this tutorial the commands you will type are formatted into the gray 
 
 This tutorial assumes a general understanding of the BASH environment. **You should be familiar with moving around the directories and understand how to manipulate files**.
 
-See the BASH tutorial and primers to get started. https://github.com/Joseph7e/HCGS-BASH-tutorial
+See the WildIris tutorial and Joe's BASH tutorial and primers to get started. 
+[https://github.com/seanharrington256/WildIris_tutorial](https://github.com/seanharrington256/WildIris_tutorial)
+[https://github.com/Joseph7e/HCGS-BASH-tutorial](https://github.com/Joseph7e/HCGS-BASH-tutorial)
+
 
 **Remember to tab complete!** There is a reason the tab is my favorite key. It prevents spelling errors and allows you to work much faster. Remember if a filename isn't auto-completing you can hit tab twice to see your files while you continue typing your command. If a file doesn't auto-complete it means you either have a spelling mistake, are in a different directory than you originally thought, or that it doesn't exist.
 
@@ -67,12 +68,9 @@ Prepare Library           |  Sequence DNA
 ## How NGS sequencing works
 [![sequencing by synthesis](img/youtube-video-sequencing.PNG)](https://www.youtube.com/watch?v=p4vKJJlNTKA&t=9s "Sequencing")
 
-Your starting data is found within the shared wy\_t3_2022 project directory.
+Your starting data is found within the shared wy\_t3\_2022 project directory in `220627_A01346_0067_AHFH5GDRX2_16MerHarrington-Bac`. We'll assign a specific sample to each person.
 
-# EDIT THIS ONCE DATA IS WHERE IT GOES
-
-
-To start we will move a set of Sample data into your home directories. Each of these samples represent the genome of a unique and novel microbe that has not been seen before (except by me). Inside this directory are Illumina HiSeq 2500, paired-end, 250 bp sequencing reads. Looking in this directory you should see two files per sample, the forward and reverse reads. These files are in **FASTQ** format (see below).
+To start we will move a set of sample data into your home directories. Inside this directory are Illumina HiSeq 2500, paired-end, 250 bp sequencing reads. Looking in this directory you should see two files per sample, the forward and reverse reads. These files are in **FASTQ** format (see below).
 
 
 ## Get your bearing on the server.
