@@ -1,9 +1,6 @@
 # MDIBL-T3-WGS-Tutorial
 Whole-Genome Assembly and Assessment Tutorial
 
-- To still update:
-	- gen_input_table.py isn't working
-
 
 ## Overview of the Workflow
 
