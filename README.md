@@ -84,7 +84,7 @@ ls
 # ls to view the project directory (I type ‘ls’ a lot!)
 ls /project/wy_t3_2022
 # view the shared directory of starting data
-ls /project/wy_t3_2022/illumina_data/
+ls /project/wy_t3_2022/220627_A01346_0067_AHFH5GDRX2_16MerHarrington-Bac
 # View the shared project with the ‘tree’ command
 tree /project/wy_t3_2022/illumina_data/
 # Make a "wgs" directory in your home directory
@@ -92,7 +92,7 @@ mkdir wgs
 # Copy a sample from the shared directory to your wgs dir, 
 # Sample_X denotes your sample name).
 # USE AUTOCOMPLETE
-cp -r /project/wy_t3_2022/illumina_data/Sample_X/* wgs
+cp -r /project/wy_t3_2022/220627_A01346_0067_AHFH5GDRX2_16MerHarrington-Bac/Sample_X/* wgs
 # confirm the copy arrived
 ls wgs
 cd wgs
