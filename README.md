@@ -288,11 +288,6 @@ alternative tools: [ABySS](http://www.bcgsc.ca/platform/bioinfo/software/abyss),
 
 With our trimmed reads in hand are now ready to assemble our genomes (check out Kelley's PowerPount for how it works). There are many programs that are used for genome assembly and different assemblers work well with certain genomes (how large the genome is, how complex, is it a Eukaryote, etc), but SPAdes works very well for most bacteria. Either way these programs are usually run with the same sort of syntax. **The input is a set of sequencing reads in FASTQ format and the output will be a FASTA file which is the genome assembly**. I encourage you to try out a different assembler and compare the results.
 
-* Load spades
-
-```
-module load gcc/11.2.0 spades/3.15.3
-```
 
 * Run SPAdes - we're going to need to do this as a non-interactive job because this will take a while.
 
@@ -306,7 +301,7 @@ Either using `nano` or the create new file and edit functions in Cyuberduck, cre
 #SBATCH -t 0-06:00
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=10G
+#SBATCH --mem=32G
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=YOUR_EMAIL@EMAIL.com
 #SBATCH -e err_spades_%A.err
