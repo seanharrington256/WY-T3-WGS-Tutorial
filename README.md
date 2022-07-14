@@ -21,7 +21,7 @@ Whole-Genome Assembly and Assessment Tutorial
     * [FASTA file format](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#fasta-format)
 * [Genome Assessment](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-assessment)
     * [Genome Structure (Contiguity)](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-structure-assessment) - w/ QUAST
-    * [Expected Gene Content](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#Run BUSCO) - w/ BUSCO
+    * [Expected Gene Content](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#Genome-Content-Assessment-with-BUSCO) - w/ BUSCO
 * [Genome Annotation](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#genome-annotation) w/PROKKA
 * [Identification of the Organism](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#organism-identification)
     * [BLAST](https://github.com/seanharrington256/WY-T3-WGS-Tutorial#blast)
@@ -439,7 +439,7 @@ Most of the output files from QUAST contain the same information in different fo
 
 <img src="https://i0.wp.com/www.molecularecologist.com/wp-content/uploads/2017/03/Figure1b.jpg?resize=640%2C129" width="320">
 
-## Genome Content Assessment w/ BUSCO
+## Genome Content Assessment with BUSCO
 manual: https://busco.ezlab.org/
 
 
